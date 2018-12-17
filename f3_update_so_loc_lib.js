@@ -60,8 +60,16 @@ var UpdateItemLocationSO = /** @class */ (function () {
                     nlapiLogExecution('DEBUG', "Channel & Class", channel + "-- " + clas);
                     loc = this.getLocationFromCustomRecord(channel, clas);
                     if (!!loc && !!loc.secondary && !!quantity) {
+                        var type = nlapiLookupField('item', item, 'type');
+                        if (type == "Assembly") {
+                            type = 'assemblyitem';
+                        }
+                        else {
+                            type = "inventoryitem";
+                        }
                         nlapiLogExecution('DEBUG', "Secondary location exist", JSON.stringify(loc));
-                        var itemrec = nlapiLoadRecord('inventoryitem', item);
+                        nlapiLogExecution('DEBUG', "item type ", type);
+                        var itemrec = nlapiLoadRecord(type, item);
                         var locLineNo = itemrec.findLineItemValue('locations', 'location', loc.primary);
                         nlapiLogExecution("DEBUG", "Quantity available primary", itemrec.getLineItemValue('locations', 'quantityavailable', locLineNo));
                         var qntyavailable = parseInt(itemrec.getLineItemValue('locations', 'quantityavailable', locLineNo)) || '';
